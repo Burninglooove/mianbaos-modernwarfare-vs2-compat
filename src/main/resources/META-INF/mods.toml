@@ -1,0 +1,43 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="mwvsbridge"
+version="${file.jarVersion}"
+displayName="ModernWarfare VS2 Bridge"
+authors="ling8"
+description='''
+Adds a minimal VS2 radar target selector and coordinate-guidance bridge for mianbao's ModernWarfare.
+'''
+
+[[mixins]]
+config="mwvsbridge.mixins.json"
+
+[[dependencies.mwvsbridge]]
+modId="forge"
+mandatory=true
+versionRange="[47,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.mwvsbridge]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1,1.21)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.mwvsbridge]]
+modId="valkyrienskies"
+mandatory=true
+versionRange="[2.1.0,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.mwvsbridge]]
+modId="mianbaos_modernwarfare"
+mandatory=true
+versionRange="[2.2.0,)"
+ordering="AFTER"
+side="BOTH"
