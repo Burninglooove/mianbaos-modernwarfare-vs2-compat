@@ -6,4 +6,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'mw-vs2-bridge'
+rootProject.name = 'mianbaos-modernwarfare-vs2-compat'

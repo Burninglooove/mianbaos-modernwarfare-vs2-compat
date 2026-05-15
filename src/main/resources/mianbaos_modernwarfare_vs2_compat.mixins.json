@@ -2,7 +2,7 @@
   "required": true,
   "package": "com.ling8.mwvsbridge.mixin",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "mwvsbridge.refmap.json",
+  "refmap": "mianbaos_modernwarfare_vs2_compat.refmap.json",
   "mixins": [
     "RadarguiButtonMessageMixin"
   ],

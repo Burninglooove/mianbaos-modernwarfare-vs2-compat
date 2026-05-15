@@ -1,6 +1,6 @@
-# ModernWarfare VS2 Bridge
+# mianbao's ModernWarfare VS2 Compat
 
-Minimal Forge 1.20.1 bridge for `mianbaos_modernwarfare` and Valkyrien Skies 2.
+Minimal Forge 1.20.1 compatibility mod for `mianbaos_modernwarfare` and Valkyrien Skies 2.
 
 ## Features
 

@@ -10,7 +10,7 @@ version = '0.1.0'
 group = 'com.ling8.mwvsbridge'
 
 base {
-    archivesName = 'mw-vs2-bridge-forge-1.20.1'
+    archivesName = 'mianbaos-modernwarfare-vs2-compat-forge-1.20.1'
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -25,7 +25,7 @@ minecraft {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             mods {
-                mwvsbridge {
+                mianbaos_modernwarfare_vs2_compat {
                     source sourceSets.main
                 }
             }
@@ -41,8 +41,8 @@ repositories {
 }
 
 mixin {
-    add sourceSets.main, 'mwvsbridge.refmap.json'
-    config 'mwvsbridge.mixins.json'
+    add sourceSets.main, 'mianbaos_modernwarfare_vs2_compat.refmap.json'
+    config 'mianbaos_modernwarfare_vs2_compat.mixins.json'
 }
 
 dependencies {
@@ -61,7 +61,7 @@ dependencies {
 jar {
     manifest {
         attributes([
-                'MixinConfigs': 'mwvsbridge.mixins.json'
+                'MixinConfigs': 'mianbaos_modernwarfare_vs2_compat.mixins.json'
         ])
     }
 }
