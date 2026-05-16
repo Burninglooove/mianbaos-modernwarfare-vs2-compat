@@ -1,4 +1,4 @@
-package com.ling8.mwvsbridge;
+package mianbaos.modernwarfare.vs2.compat;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

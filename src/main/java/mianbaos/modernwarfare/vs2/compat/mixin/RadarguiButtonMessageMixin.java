@@ -1,6 +1,6 @@
-package com.ling8.mwvsbridge.mixin;
+package mianbaos.modernwarfare.vs2.compat.mixin;
 
-import com.ling8.mwvsbridge.RadarAccess;
+import mianbaos.modernwarfare.vs2.compat.RadarAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;

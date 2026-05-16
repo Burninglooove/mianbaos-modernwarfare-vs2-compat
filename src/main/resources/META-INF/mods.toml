@@ -6,7 +6,7 @@ license="All Rights Reserved"
 modId="mianbaos_modernwarfare_vs2_compat"
 version="${file.jarVersion}"
 displayName="mianbao's ModernWarfare VS2 Compat"
-authors="ling8"
+authors="mw-vs2-bridge contributors"
 description='''
 Adds VS2 radar targeting and coordinate-guidance compatibility for mianbao's ModernWarfare.
 '''
