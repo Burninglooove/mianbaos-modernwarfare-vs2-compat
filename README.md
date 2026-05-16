@@ -1,15 +1,6 @@
 # mianbao's ModernWarfare VS2 Compat
 
-Forge 1.20.1 compatibility bridge for `mianbaos_modernwarfare` and Valkyrien Skies 2.
+Basic Valkyrien Skies 2 compatibility for mianbao's ModernWarfare.
 
-## What it does
-
-- Adds a `VS2` mode to the ModernWarfare radar GUI.
-- Lets the radar cycle, lock, and clear nearby VS2 ship targets.
-- Feeds locked ship coordinates into guided ModernWarfare projectiles.
-
-## Build
-
-Place the ModernWarfare dev jar in `libs/` if you need it locally, then run the Gradle `build` task.
-
-Runtime requirements: Forge 1.20.1, Valkyrien Skies 2, and mianbao's ModernWarfare.
+- Adds VS2 target cycling, preview, lock, and clear support to the radar.
+- Lets air-to-air missiles and other guided projectiles track locked VS2 physical bodies.
