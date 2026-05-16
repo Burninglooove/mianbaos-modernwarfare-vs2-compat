@@ -1,4 +1,4 @@
-package mianbaos.modernwarfare.vs2.compat;
+package mmvc;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;

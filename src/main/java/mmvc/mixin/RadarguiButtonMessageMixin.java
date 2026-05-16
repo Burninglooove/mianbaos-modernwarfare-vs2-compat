@@ -1,6 +1,6 @@
-package mianbaos.modernwarfare.vs2.compat.mixin;
+package mmvc.mixin;
 
-import mianbaos.modernwarfare.vs2.compat.RadarAccess;
+import mmvc.RadarAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;

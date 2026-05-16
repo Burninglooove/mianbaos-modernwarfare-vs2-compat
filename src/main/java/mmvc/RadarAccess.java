@@ -1,4 +1,4 @@
-package mianbaos.modernwarfare.vs2.compat;
+package mmvc;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -17,6 +17,9 @@ public final class RadarAccess {
     public static final String MW_TAG_PLAYER_MODE = "\u73a9\u5bb6\u6a21\u5f0f";
     public static final String MW_TAG_MODE_TEXT = "\u6a21\u5f0f";
     public static final String MW_TAG_LOCKED = "\u96f7\u8fbe\u9501\u5b9a";
+    public static final String MW_TAG_LOCK_X = "\u96f7\u8fbe\u9501\u5b9ax";
+    public static final String MW_TAG_LOCK_Y = "\u96f7\u8fbe\u9501\u5b9ay";
+    public static final String MW_TAG_LOCK_Z = "\u96f7\u8fbe\u9501\u5b9az";
     public static final String MW_TAG_TARGET_NAME = "\u9501\u5b9a\u76ee\u6807\u540d\u79f0";
     public static final String MW_TAG_CHANNEL = "\u9891\u9053";
 
@@ -52,11 +55,13 @@ public final class RadarAccess {
         data.putLong(TAG_SELECTED_SHIP, track.shipId());
         data.putBoolean(MW_TAG_LOCKED, true);
         data.putString(MW_TAG_TARGET_NAME, track.name());
+        data.putString("target", Long.toString(track.shipId()));
+        writeLockPosition(data, track.predictedPosition(level.getGameTime()));
         blockEntity.setChanged();
         level.sendBlockUpdated(pos, blockEntity.getBlockState(), blockEntity.getBlockState(), 3);
 
         String channel = channel(level, pos);
-        TargetRegistry.set(level, channel, track.shipId());
+        TargetRegistry.set(level, channel, track);
         return true;
     }
 
@@ -150,8 +155,12 @@ public final class RadarAccess {
         CompoundTag data = blockEntity.getPersistentData();
         TargetRegistry.clear(level, data.getString(MW_TAG_CHANNEL));
         data.remove(TAG_SELECTED_SHIP);
+        data.remove("target");
         data.putBoolean(TAG_VS_MODE, false);
         data.putString(MW_TAG_TARGET_NAME, "");
+        data.remove(MW_TAG_LOCK_X);
+        data.remove(MW_TAG_LOCK_Y);
+        data.remove(MW_TAG_LOCK_Z);
         blockEntity.setChanged();
         level.sendBlockUpdated(pos, blockEntity.getBlockState(), blockEntity.getBlockState(), 3);
     }
@@ -175,6 +184,8 @@ public final class RadarAccess {
         data.putInt(TAG_VS_INDEX, index);
         data.putLong(TAG_SELECTED_SHIP, track.shipId());
         data.putString(MW_TAG_TARGET_NAME, track.name() + " #" + track.shipId());
+        data.putString("target", Long.toString(track.shipId()));
+        writeLockPosition(data, track.predictedPosition(level.getGameTime()));
         blockEntity.setChanged();
         level.sendBlockUpdated(pos, blockEntity.getBlockState(), blockEntity.getBlockState(), 3);
     }
@@ -185,5 +196,11 @@ public final class RadarAccess {
             return null;
         }
         return tracks.get(Math.floorMod(requestedIndex, tracks.size()));
+    }
+
+    private static void writeLockPosition(CompoundTag data, net.minecraft.world.phys.Vec3 pos) {
+        data.putDouble(MW_TAG_LOCK_X, pos.x);
+        data.putDouble(MW_TAG_LOCK_Y, pos.y);
+        data.putDouble(MW_TAG_LOCK_Z, pos.z);
     }
 }

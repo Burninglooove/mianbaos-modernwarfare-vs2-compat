@@ -7,7 +7,7 @@ plugins {
 }
 
 version = '0.1.0'
-group = 'mianbaos.modernwarfare.vs2.compat'
+group = 'mmvc'
 
 base {
     archivesName = 'mianbaos-modernwarfare-vs2-compat-forge-1.20.1'

@@ -1,4 +1,4 @@
-package mianbaos.modernwarfare.vs2.compat;
+package mmvc;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;

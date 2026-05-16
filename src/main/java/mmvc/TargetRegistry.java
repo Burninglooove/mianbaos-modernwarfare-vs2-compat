@@ -1,4 +1,4 @@
-package mianbaos.modernwarfare.vs2.compat;
+package mmvc;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -21,11 +21,26 @@ public final class TargetRegistry {
         CHANNEL_TARGETS.put(key(level.dimension(), channel), shipId);
     }
 
+    public static void set(ServerLevel level, String channel, TrackInfo track) {
+        set(level, channel, track.shipId());
+        set(level, track.name(), track.shipId());
+        set(level, track.name() + " #" + track.shipId(), track.shipId());
+        set(level, Long.toString(track.shipId()), track.shipId());
+        set(level, "VS2 #" + track.shipId(), track.shipId());
+    }
+
     public static void clear(ServerLevel level, String channel) {
         if (channel == null || channel.isBlank()) {
             return;
         }
         CHANNEL_TARGETS.remove(key(level.dimension(), channel));
+    }
+
+    public static void clear(ServerLevel level, TrackInfo track) {
+        clear(level, track.name());
+        clear(level, track.name() + " #" + track.shipId());
+        clear(level, Long.toString(track.shipId()));
+        clear(level, "VS2 #" + track.shipId());
     }
 
     public static OptionalLong get(ResourceKey<Level> dimension, String channel) {

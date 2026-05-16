@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "mianbaos.modernwarfare.vs2.compat.mixin",
+  "package": "mmvc.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "mianbaos_modernwarfare_vs2_compat.refmap.json",
   "mixins": [

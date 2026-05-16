@@ -1,4 +1,4 @@
-package mianbaos.modernwarfare.vs2.compat;
+package mmvc;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -84,7 +84,49 @@ public final class ServerEvents {
             data.putDouble("x_target", aim.x);
             data.putDouble("y_target", aim.y);
             data.putDouble("z_target", aim.z);
+            if (isAirToAirProjectile(entity)) {
+                steerAirToAirProjectile(level, entity, track);
+            }
         });
+    }
+
+    private static void steerAirToAirProjectile(ServerLevel level, Entity entity, TrackInfo track) {
+        CompoundTag data = entity.getPersistentData();
+        double flightTicks = data.getDouble("fadongji1");
+        if (flightTicks > 0.0 && flightTicks < 5.0) {
+            return;
+        }
+
+        Vec3 current = entity.getDeltaMovement();
+        double speed = Math.max(current.length(), baseAirToAirSpeed(entity));
+        double leadSeconds = entity.position().distanceTo(track.predictedPosition(level.getGameTime())) / Math.max(speed * 20.0, 1.0);
+        Vec3 aim = track.predictedPosition(level.getGameTime()).add(track.velocity().scale(Math.min(leadSeconds, 3.0)));
+        Vec3 toTarget = aim.subtract(entity.position());
+        if (toTarget.lengthSqr() < 1.0e-6) {
+            return;
+        }
+
+        Vec3 desired = toTarget.normalize().scale(speed);
+        double turn = airToAirTurnRate(entity);
+        Vec3 guided = current.lengthSqr() < 1.0e-6
+                ? desired
+                : current.scale(1.0 - turn).add(desired.scale(turn));
+        if (guided.lengthSqr() < 1.0e-6) {
+            return;
+        }
+
+        guided = guided.normalize().scale(speed);
+        if (shouldDetonateVsTarget(entity, aim, guided)) {
+            level.explode(entity, entity.getX(), entity.getY(), entity.getZ(), airToAirExplosionPower(entity), Level.ExplosionInteraction.NONE);
+            entity.discard();
+            return;
+        }
+
+        data.putDouble("Vx", guided.x);
+        data.putDouble("Vy", guided.y);
+        data.putDouble("Vz", guided.z);
+        entity.setNoGravity(true);
+        entity.setDeltaMovement(guided);
     }
 
     private static String readChannel(CompoundTag data) {
@@ -100,9 +142,53 @@ public final class ServerEvents {
         if (!className.startsWith("net.mcreator.myfirstmod.entity.")) {
             return false;
         }
+        String simpleName = entity.getClass().getSimpleName().toLowerCase();
+        if (simpleName.contains("tanshe") && (simpleName.contains("missile") || simpleName.contains("rocket"))) {
+            return true;
+        }
         return className.endsWith("tansheEntity")
                 || className.endsWith("TansheEntity")
                 || className.endsWith("rocketEntity")
                 || className.endsWith("missileEntity");
+    }
+
+    private static boolean isAirToAirProjectile(Entity entity) {
+        String name = entity.getClass().getSimpleName().toLowerCase();
+        return name.contains("antiair") && name.contains("missile") && name.contains("tanshe");
+    }
+
+    private static double baseAirToAirSpeed(Entity entity) {
+        String name = entity.getClass().getSimpleName().toLowerCase();
+        return name.contains("tanshe2") || name.contains("system") ? 12.0 : 9.0;
+    }
+
+    private static double airToAirTurnRate(Entity entity) {
+        String name = entity.getClass().getSimpleName().toLowerCase();
+        return name.contains("tanshe2") || name.contains("system") ? 0.35 : 0.25;
+    }
+
+    private static boolean shouldDetonateVsTarget(Entity entity, Vec3 aim, Vec3 velocity) {
+        Vec3 start = entity.position();
+        Vec3 end = start.add(velocity);
+        Vec3 travel = end.subtract(start);
+        double travelSqr = travel.lengthSqr();
+        double radius = airToAirDetonationRadius(entity);
+        if (travelSqr < 1.0e-6) {
+            return start.distanceToSqr(aim) <= radius * radius;
+        }
+        double t = aim.subtract(start).dot(travel) / travelSqr;
+        t = Math.max(0.0, Math.min(1.0, t));
+        Vec3 closest = start.add(travel.scale(t));
+        return closest.distanceToSqr(aim) <= radius * radius;
+    }
+
+    private static double airToAirDetonationRadius(Entity entity) {
+        String name = entity.getClass().getSimpleName().toLowerCase();
+        return name.contains("tanshe2") || name.contains("system") ? 6.0 : 5.0;
+    }
+
+    private static float airToAirExplosionPower(Entity entity) {
+        String name = entity.getClass().getSimpleName().toLowerCase();
+        return name.contains("tanshe2") || name.contains("system") ? 4.0F : 3.0F;
     }
 }

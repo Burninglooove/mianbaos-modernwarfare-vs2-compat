@@ -1,4 +1,4 @@
-package mianbaos.modernwarfare.vs2.compat;
+package mmvc;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
