@@ -16,6 +16,7 @@ public final class RadarAccess {
     public static final String MW_TAG_ENTITY_MODE = "\u5b9e\u4f53\u6a21\u5f0f";
     public static final String MW_TAG_PLAYER_MODE = "\u73a9\u5bb6\u6a21\u5f0f";
     public static final String MW_TAG_MODE_TEXT = "\u6a21\u5f0f";
+    public static final String MW_TAG_LOCK_ACTIVE = "\u9501\u5b9a";
     public static final String MW_TAG_LOCKED = "\u96f7\u8fbe\u9501\u5b9a";
     public static final String MW_TAG_LOCK_X = "\u96f7\u8fbe\u9501\u5b9ax";
     public static final String MW_TAG_LOCK_Y = "\u96f7\u8fbe\u9501\u5b9ay";
@@ -51,8 +52,10 @@ public final class RadarAccess {
             return false;
         }
         CompoundTag data = blockEntity.getPersistentData();
+        clearSelectedRegistry(level, data);
         data.putBoolean(TAG_VS_MODE, true);
         data.putLong(TAG_SELECTED_SHIP, track.shipId());
+        data.putBoolean(MW_TAG_LOCK_ACTIVE, true);
         data.putBoolean(MW_TAG_LOCKED, true);
         data.putString(MW_TAG_TARGET_NAME, track.name());
         data.putString("target", Long.toString(track.shipId()));
@@ -113,9 +116,7 @@ public final class RadarAccess {
             updatePreview(level, pos, 0);
         } else {
             data.putString(MW_TAG_MODE_TEXT, "NONE");
-            data.putBoolean(MW_TAG_LOCKED, false);
-            data.putString(MW_TAG_TARGET_NAME, "");
-            TargetRegistry.clear(level, data.getString(MW_TAG_CHANNEL));
+            clearLock(level, data);
         }
         blockEntity.setChanged();
         level.sendBlockUpdated(pos, blockEntity.getBlockState(), blockEntity.getBlockState(), 3);
@@ -139,6 +140,7 @@ public final class RadarAccess {
         CompoundTag data = blockEntity.getPersistentData();
         TrackInfo track = previewTrack(level, pos, data.getInt(TAG_VS_INDEX));
         if (track == null) {
+            clearLock(level, data);
             data.putString(MW_TAG_TARGET_NAME, "NO TARGET");
             blockEntity.setChanged();
             level.sendBlockUpdated(pos, blockEntity.getBlockState(), blockEntity.getBlockState(), 3);
@@ -153,11 +155,10 @@ public final class RadarAccess {
             return;
         }
         CompoundTag data = blockEntity.getPersistentData();
-        TargetRegistry.clear(level, data.getString(MW_TAG_CHANNEL));
+        clearLock(level, data);
         data.remove(TAG_SELECTED_SHIP);
         data.remove("target");
         data.putBoolean(TAG_VS_MODE, false);
-        data.putString(MW_TAG_TARGET_NAME, "");
         data.remove(MW_TAG_LOCK_X);
         data.remove(MW_TAG_LOCK_Y);
         data.remove(MW_TAG_LOCK_Z);
@@ -173,6 +174,7 @@ public final class RadarAccess {
         CompoundTag data = blockEntity.getPersistentData();
         ArrayList<TrackInfo> tracks = VsTrackCache.query(level, pos, radarRange(level, pos), 0, 128);
         if (tracks.isEmpty()) {
+            clearLock(level, data);
             data.putInt(TAG_VS_INDEX, 0);
             data.putString(MW_TAG_TARGET_NAME, "NO TARGET");
             blockEntity.setChanged();
@@ -181,6 +183,7 @@ public final class RadarAccess {
         }
         int index = Math.floorMod(requestedIndex, tracks.size());
         TrackInfo track = tracks.get(index);
+        clearLock(level, data);
         data.putInt(TAG_VS_INDEX, index);
         data.putLong(TAG_SELECTED_SHIP, track.shipId());
         data.putString(MW_TAG_TARGET_NAME, track.name() + " #" + track.shipId());
@@ -202,5 +205,19 @@ public final class RadarAccess {
         data.putDouble(MW_TAG_LOCK_X, pos.x);
         data.putDouble(MW_TAG_LOCK_Y, pos.y);
         data.putDouble(MW_TAG_LOCK_Z, pos.z);
+    }
+
+    private static void clearLock(ServerLevel level, CompoundTag data) {
+        clearSelectedRegistry(level, data);
+        TargetRegistry.clear(level, data.getString(MW_TAG_CHANNEL));
+        data.putBoolean(MW_TAG_LOCK_ACTIVE, false);
+        data.putBoolean(MW_TAG_LOCKED, false);
+        data.putString(MW_TAG_TARGET_NAME, "");
+    }
+
+    private static void clearSelectedRegistry(ServerLevel level, CompoundTag data) {
+        if (data.contains(TAG_SELECTED_SHIP)) {
+            TargetRegistry.clear(level, data.getLong(TAG_SELECTED_SHIP));
+        }
     }
 }

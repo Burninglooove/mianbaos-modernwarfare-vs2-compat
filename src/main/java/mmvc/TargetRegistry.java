@@ -18,7 +18,7 @@ public final class TargetRegistry {
         if (channel == null || channel.isBlank()) {
             return;
         }
-        CHANNEL_TARGETS.put(key(level.dimension(), channel), shipId);
+        CHANNEL_TARGETS.put(key(level.dimension(), channel.trim()), shipId);
     }
 
     public static void set(ServerLevel level, String channel, TrackInfo track) {
@@ -33,7 +33,7 @@ public final class TargetRegistry {
         if (channel == null || channel.isBlank()) {
             return;
         }
-        CHANNEL_TARGETS.remove(key(level.dimension(), channel));
+        CHANNEL_TARGETS.remove(key(level.dimension(), channel.trim()));
     }
 
     public static void clear(ServerLevel level, TrackInfo track) {
@@ -43,11 +43,17 @@ public final class TargetRegistry {
         clear(level, "VS2 #" + track.shipId());
     }
 
+    public static void clear(ServerLevel level, long shipId) {
+        CHANNEL_TARGETS.entrySet().removeIf(entry ->
+                entry.getKey().startsWith(level.dimension().location() + "|")
+                        && entry.getValue() == shipId);
+    }
+
     public static OptionalLong get(ResourceKey<Level> dimension, String channel) {
         if (channel == null || channel.isBlank()) {
             return OptionalLong.empty();
         }
-        Long id = CHANNEL_TARGETS.get(key(dimension, channel));
+        Long id = CHANNEL_TARGETS.get(key(dimension, channel.trim()));
         return id == null ? OptionalLong.empty() : OptionalLong.of(id);
     }
 
