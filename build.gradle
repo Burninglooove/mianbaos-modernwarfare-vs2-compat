@@ -37,7 +37,7 @@ repositories {
     maven { url = 'https://maven.minecraftforge.net' }
     maven { url = 'https://maven.valkyrienskies.org/' }
     mavenCentral()
-    flatDir { dirs '../Control-Craft-1.20.1-vs-2.3.0-beta5/libs' }
+    flatDir { dirs 'libs' }
 }
 
 mixin {
